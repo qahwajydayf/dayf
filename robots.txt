@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://qahwajydayf.github.io/dayf/sitemap.xml
