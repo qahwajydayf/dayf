@@ -1,7 +1,7 @@
 /* =========================================
    Qahwaji Taif - main.js
-   - FAQ accordion
-   - Booking form -> WhatsApp
+   - FAQ accordion (accessible: aria-expanded + hidden)
+   - Booking form -> WhatsApp (includes "via website" + page URL)
    - Smooth scroll anchors
    - Fade-in on scroll (IntersectionObserver)
    ========================================= */
@@ -13,20 +13,64 @@
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
-  // ---------- FAQ Accordion ----------
-  // HTML must use: onclick="toggleFAQ(this)" OR we auto-bind below
-  window.toggleFAQ = function (element) {
-    const faqItem = element?.closest(".faq-item");
-    if (!faqItem) return;
+  // ---------- FAQ Accordion (Accessible) ----------
+  // HTML structure expected:
+  // .faq-item
+  //   button.faq-question[aria-expanded="false"]
+  //   .faq-answer[hidden]
+  function closeAllFaq(exceptItem = null) {
+    $$(".faq-item").forEach((item) => {
+      if (exceptItem && item === exceptItem) return;
 
-    const isActive = faqItem.classList.contains("active");
-    $$(".faq-item").forEach((item) => item.classList.remove("active"));
-    if (!isActive) faqItem.classList.add("active");
+      const btn = $(".faq-question", item);
+      const ans = $(".faq-answer", item);
+
+      if (btn) btn.setAttribute("aria-expanded", "false");
+      if (ans) ans.hidden = true;
+
+      // optional legacy class support
+      item.classList.remove("active");
+    });
+  }
+
+  window.toggleFAQ = function (buttonEl) {
+    const item = buttonEl?.closest(".faq-item");
+    if (!item) return;
+
+    const btn = $(".faq-question", item) || buttonEl;
+    const ans = $(".faq-answer", item);
+
+    const expanded = btn.getAttribute("aria-expanded") === "true";
+
+    // close others
+    closeAllFaq(item);
+
+    // toggle current
+    btn.setAttribute("aria-expanded", String(!expanded));
+    if (ans) ans.hidden = expanded;
+
+    // optional legacy class support
+    item.classList.toggle("active", !expanded);
   };
 
-  // Optional: auto-bind clicks if you remove inline onclick
-  $$(".faq-question").forEach((q) => {
-    q.addEventListener("click", () => window.toggleFAQ(q));
+  // Auto-bind clicks (حتى لو شلت onclick من الـ HTML)
+  $$(".faq-question").forEach((btn) => {
+    btn.addEventListener("click", () => window.toggleFAQ(btn));
+  });
+
+  // Ensure initial FAQ state is consistent
+  $$(".faq-item").forEach((item) => {
+    const btn = $(".faq-question", item);
+    const ans = $(".faq-answer", item);
+    if (!btn || !ans) return;
+
+    // إذا ما فيه aria-expanded خلّه false
+    if (!btn.hasAttribute("aria-expanded")) btn.setAttribute("aria-expanded", "false");
+
+    const expanded = btn.getAttribute("aria-expanded") === "true";
+    ans.hidden = !expanded;
+
+    item.classList.toggle("active", expanded);
   });
 
   // ---------- Booking Form -> WhatsApp ----------
@@ -38,7 +82,6 @@
       const formData = new FormData(bookingForm);
       const data = Object.fromEntries(formData.entries());
 
-      // Convert select values to Arabic labels (optional)
       const eventLabels = {
         wedding: "حفل زفاف",
         corporate: "مناسبة شركات",
@@ -56,7 +99,6 @@
         other: "منطقة أخرى في الطائف",
       };
 
-      // Basic validation (extra safety)
       const name = (data.name || "").trim();
       const phone = (data.phone || "").trim();
 
@@ -72,8 +114,10 @@
         return;
       }
 
-      // WhatsApp message
-      let message = "مرحباً، أود حجز خدمة الضيافة التراثية:\n\n";
+      // Message (includes "via website" + page URL)
+      let message = "سلام الله عليكم، اتواصل معكم عبر موقعكم\n";
+      message += `رابط الصفحة: ${window.location.href}\n\n`;
+      message += "أود حجز خدمة الضيافة التراثية:\n\n";
       message += `الاسم: ${name}\n`;
       message += `الهاتف: ${phone}\n`;
       message += `نوع المناسبة: ${eventLabels[data.eventType] || data.eventType || "غير محدد"}\n`;
@@ -87,7 +131,6 @@
       const waNumber = "966507712688";
       const url = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
 
-      // Open WhatsApp (with fallback if popup blocked)
       const win = window.open(url, "_blank", "noopener,noreferrer");
       if (!win) window.location.href = url;
 
@@ -111,28 +154,24 @@
   });
 
   // ---------- Fade-in on Scroll ----------
-  // Requires CSS: .fade-in and .fade-in.visible
-  const animated = $$(".standard-card, .value-card, .service-card, .stat-card");
+  const animated = $$(".standard-card, .value-card, .service-card, .stat-card, .area-card, .faq-item");
 
-  // If browser doesn't support IntersectionObserver, just show everything
   if (!("IntersectionObserver" in window)) {
     animated.forEach((el) => el.classList.add("visible"));
     return;
   }
 
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: "0px 0px -50px 0px",
-  };
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("visible");
-        observer.unobserve(entry.target); // performance
-      }
-    });
-  }, observerOptions);
+  const observer = new IntersectionObserver(
+    (entries, obs) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          obs.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
+  );
 
   animated.forEach((el) => {
     el.classList.add("fade-in");
