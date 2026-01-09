@@ -797,3 +797,39 @@ textarea.form-input { resize: vertical; min-height: 110px; }
   color:#fff;
   border:1px solid rgba(255,255,255,0.28);
 }
+/* ✅ تصغير الهيدر بالموبايل */
+@media (max-width: 768px){
+
+  .header-container{
+    padding: .55rem 1rem;   /* كان .9rem */
+    gap: .75rem;
+    align-items: center;
+  }
+
+  /* صغّر اللوجو وخفّف ارتفاع النص */
+  .logo-icon{
+    width: 2.1rem;
+    height: 2.1rem;
+  }
+  .logo h2{
+    font-size: 1.05rem;
+    line-height: 1.2;
+  }
+
+  /* أخفي وصف اللوجو بالموبايل لأنه يزود ارتفاع الهيدر */
+  .logo p{
+    display: none;
+  }
+
+  /* خفف زر المينيو */
+  .mobile-menu-toggle{
+    font-size: 1.4rem;
+    padding: .45rem .55rem;
+  }
+
+  /* لو زر الرجوع هو اللي عامل سطر/ارتفاع زيادة */
+  .header-home-btn a{
+    font-size: .8rem;
+    padding: .32rem .7rem;
+  }
+}
