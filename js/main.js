@@ -1,269 +1,596 @@
-/* =========================================================
-   Qahwaji Taif - main.js
-   - Sticky header height -> CSS var (fix overlap)
-   - Mobile menu (accessible)
-   - Smooth scroll with offset
-   - FAQ accordion (accessible) + JSON-LD FAQPage auto-fill
-   - Booking form -> WhatsApp message (includes page URL)
-   - Reveal animation (IntersectionObserver)
-   ========================================================= */
+/* =========================================
+   THEME A — CLEAN MINIMAL (RTL)
+   Landing/Services friendly • Light • Readable
+   Works with your existing HTML (no HTML changes)
+   ========================================= */
 
-(() => {
-  "use strict";
+:root{
+  --primary-color:#003080;
+  --secondary-color:#0ea5e9;
+  --accent-color:#22c55e;
 
-  const $ = (sel, root = document) => root.querySelector(sel);
-  const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+  --text-dark:#0f172a;
+  --text-muted:#6b7280;
 
-  // ---------- Header height -> CSS var (حل تغطية الهيرو/المحتوى) ----------
-  const header = $("#siteHeader");
-  function syncHeaderHeight() {
-    if (!header) return;
-    const h = Math.ceil(header.getBoundingClientRect().height);
-    document.documentElement.style.setProperty("--header-h", `${h}px`);
+  --bg-body:#f3f4f6;
+  --bg-light:#f9fafb;
+  --bg-white:rgba(255,255,255,.92);
+
+  --border-color:#e5e7eb;
+
+  --shadow:0 10px 26px rgba(15,23,42,.07);
+  --shadow-hover:0 16px 44px rgba(15,23,42,.12);
+
+  --radius-sm:12px;
+  --radius-md:16px;
+  --radius-lg:18px;
+  --radius-xl:20px;
+
+  --blur:16px;
+  --max-width:1200px;
+
+  --focus-ring:0 0 0 3px rgba(14,165,233,.18);
+  --transition:.2s ease;
+}
+
+/* =============== Reset =============== */
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:auto;}
+body{
+  font-family:'Cairo','Tajawal','Segoe UI',Tahoma,sans-serif;
+  direction:rtl;
+  text-align:right;
+  line-height:1.85;
+  color:var(--text-dark);
+  background:
+    radial-gradient(circle at top right, rgba(14,165,233,.08), transparent 55%),
+    radial-gradient(circle at bottom left, rgba(34,197,94,.08), transparent 55%),
+    var(--bg-body);
+}
+main{min-height:100vh;}
+img{max-width:100%;display:block;}
+a{
+  color:inherit;
+  text-decoration:none;
+  transition:color var(--transition), background-color var(--transition), transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+p{color:var(--text-muted);margin:0 0 1rem;font-size:1rem;}
+ul{list-style-position:inside;}
+svg{width:1em;height:1em;fill:currentColor;}
+svg[stroke]{stroke:currentColor;fill:none;}
+
+:where(a,button,input,select,textarea):focus{outline:none;}
+:where(a,button,input,select,textarea):focus-visible{box-shadow:var(--focus-ring);border-radius:12px;}
+
+.container{max-width:var(--max-width);margin:0 auto;}
+.section{padding:3.2rem 1.5rem;}
+.section-light{background:var(--bg-light);}
+.text-center{text-align:center;}
+
+/* ✅ منع أي شريط حكومي إن كان موجود في HTML */
+.gov-topbar{display:none !important;}
+
+/* ✅ تحسين القفز للـ anchors تحت الهيدر */
+[id]{scroll-margin-top:92px;}
+
+/* =============== Typography =============== */
+h1,h2,h3,h4,h5,h6{font-weight:900;line-height:1.35;margin-bottom:.7rem;}
+h1{font-size:clamp(1.95rem,4vw,2.85rem);}
+h2{font-size:clamp(1.65rem,3vw,2.25rem);}
+h3{font-size:1.18rem;}
+
+/* =============== Header =============== */
+header{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  background:rgba(255,255,255,.92);
+  border-bottom:1px solid rgba(148,163,184,.16);
+  backdrop-filter:blur(var(--blur));
+}
+.header-container{
+  max-width:var(--max-width);
+  margin:0 auto;
+  padding:.62rem 1.6rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+}
+
+/* ترتيب عناصر الهيدر */
+.logo{order:1;min-width:0;display:flex;align-items:center;gap:.75rem;}
+.header-home-btn{order:2;}
+nav{order:3;}
+.mobile-menu-toggle{order:4;}
+
+.logo-icon{width:2.6rem;height:2.6rem;color:var(--primary-color);}
+.logo h2{margin:0;color:var(--primary-color);font-size:1.22rem;line-height:1.2;}
+.logo p{margin:0;color:var(--text-muted);font-size:.84rem;line-height:1.2;}
+
+.header-home-btn a{
+  display:inline-flex;
+  align-items:center;
+  gap:.4rem;
+  font-size:.85rem;
+  font-weight:900;
+  color:var(--primary-color);
+  background:transparent;
+  border:1px solid rgba(0,48,128,.22);
+  padding:.42rem .95rem;
+  border-radius:999px;
+  white-space:nowrap;
+}
+.header-home-btn a:hover{
+  background:rgba(0,48,128,.06);
+  transform:translateX(-2px);
+  box-shadow:0 10px 22px rgba(15,23,42,.10);
+}
+
+nav ul{
+  list-style:none;
+  display:flex;
+  align-items:center;
+  gap:1.35rem;
+}
+nav ul li{position:relative;}
+nav ul li a{
+  position:relative;
+  font-weight:900;
+  font-size:.95rem;
+  color:var(--text-dark);
+  padding:.35rem 0;
+}
+nav ul li a::after{
+  content:'';
+  position:absolute;
+  right:0;
+  bottom:-.35rem;
+  width:0;
+  height:2px;
+  border-radius:999px;
+  background:linear-gradient(90deg,var(--primary-color),var(--secondary-color));
+  transition:width .25s ease;
+}
+nav ul li a:hover{color:var(--primary-color);}
+nav ul li a:hover::after{width:100%;}
+nav ul li a.active{color:var(--primary-color);}
+nav ul li a.active::after{width:100%;}
+
+/* Dropdown (Desktop) */
+.dropdown-menu{
+  display:none;
+  position:absolute;
+  top:110%;
+  right:0;
+  min-width:280px;
+  padding:.55rem 0;
+  background:var(--bg-white);
+  border:1px solid rgba(148,163,184,.20);
+  border-radius:14px;
+  box-shadow:var(--shadow);
+  z-index:1000;
+}
+.dropdown:hover .dropdown-menu{display:block;}
+.dropdown-menu li a{
+  display:block;
+  padding:.75rem 1.2rem;
+  font-weight:800;
+  color:var(--text-dark);
+}
+.dropdown-menu li a::after{display:none;}
+.dropdown-menu li a:hover{
+  background:rgba(15,23,42,.04);
+  color:var(--primary-color);
+  padding-right:1.55rem;
+}
+
+/* Mobile menu toggle */
+.mobile-menu-toggle{
+  display:none;
+  font-size:1.7rem;
+  background:#fff;
+  border:1px solid rgba(148,163,184,.30);
+  border-radius:12px;
+  padding:.5rem .65rem;
+  color:var(--primary-color);
+  cursor:pointer;
+}
+
+/* =============== Buttons =============== */
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.55rem;
+  padding:.85rem 1.6rem;
+  border-radius:999px;
+  font-weight:900;
+  font-size:.96rem;
+  cursor:pointer;
+  border:none;
+  white-space:nowrap;
+  box-shadow:0 10px 22px rgba(15,23,42,.10);
+  transition:transform var(--transition), box-shadow var(--transition), background-color var(--transition), border-color var(--transition);
+}
+.btn:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover);}
+
+.btn-primary,
+.btn-call{
+  background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));
+  color:#fff;
+}
+.btn-primary:hover,
+.btn-call:hover{filter:brightness(.97);}
+
+.btn-whatsapp,
+.btn-wa{
+  background:linear-gradient(135deg,#22c55e,#16a34a);
+  color:#fff;
+}
+
+.btn-outline,
+.btn-services{
+  background:transparent;
+  border:2px solid var(--primary-color);
+  color:var(--primary-color);
+  box-shadow:none;
+}
+.btn-outline:hover,
+.btn-services:hover{background:rgba(0,48,128,.06);box-shadow:0 10px 28px rgba(37,100,235,.16);}
+
+/* =============== Section title =============== */
+.section-title{text-align:center;margin-bottom:2.2rem;}
+.section-title{
+  /* دعم حالتك: أحياناً h2 بدون div داخلي */
+}
+.section-title h2,
+h2.section-title{
+  display:inline-block;
+  position:relative;
+  padding-bottom:.75rem;
+}
+.section-title h2::after,
+h2.section-title::after{
+  content:'';
+  position:absolute;
+  right:50%;
+  transform:translateX(50%);
+  bottom:0;
+  width:92px;
+  height:3px;
+  border-radius:999px;
+  background:linear-gradient(90deg,var(--primary-color),var(--secondary-color));
+}
+
+/* =============== Cards & Grids =============== */
+.card,
+.standard-card,
+.service-card,
+.area-card,
+.feature-item{
+  background:var(--bg-white);
+  border:1px solid rgba(148,163,184,.14);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+}
+
+.standards-grid,
+.services-grid,
+.areas-grid,
+.features-grid{
+  display:grid;
+  gap:1.4rem;
+  grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.standard-card,
+.service-card,
+.area-card,
+.feature-item{
+  padding:1.7rem 1.45rem;
+}
+
+.standard-icon,
+.service-icon,
+.feature-icon{
+  width:60px;height:60px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:16px;
+  background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));
+  color:#fff;
+  margin:0 auto 1rem;
+}
+.standard-icon svg,
+.service-icon svg,
+.feature-icon svg{width:28px;height:28px;fill:#fff;}
+
+.standard-card h3,
+.service-card h3,
+.feature-item h3{margin-bottom:.5rem;}
+
+/* =============== HERO (fix big gap) =============== */
+.hero{
+  position:relative;
+  overflow:hidden;
+
+  /* ✅ أهم تعديل: يقلل الفراغ تحت الهيدر */
+  padding:2.05rem 1.25rem 3.1rem;
+
+  background:
+    radial-gradient(circle at top right, #e0f2fe 0, transparent 55%),
+    radial-gradient(circle at bottom left, #dcfce7 0, transparent 55%),
+    #f9fafb;
+  border-bottom:1px solid rgba(148,163,184,.14);
+
+  display:flex;
+  flex-direction:column;
+  gap:1.55rem;
+}
+.hero-content{max-width:760px;margin-inline:auto;position:relative;}
+.hero-label{
+  display:inline-flex;
+  align-items:center;
+  gap:.35rem;
+  padding:.25rem .75rem;
+  border-radius:999px;
+  background:rgba(0,48,128,.06);
+  border:1px solid rgba(0,48,128,.10);
+  color:var(--primary-color);
+  font-weight:900;
+  font-size:.85rem;
+
+  /* ✅ تقليل المسافة تحتها */
+  margin-bottom:.35rem;
+}
+.hero-label::before{
+  content:"";
+  width:8px;height:8px;border-radius:999px;
+  background:var(--accent-color);
+}
+.hero h1{margin:0 0 .55rem;}
+.hero-subtitle{margin:0 0 .9rem;color:#4b5563;}
+.hero-cta{display:flex;flex-wrap:wrap;gap:.75rem;margin-bottom:.75rem;}
+.hero-meta{font-size:.88rem;color:#6b7280;font-weight:800;}
+
+/* بطاقات مزايا/معلومات داخل الهيرو إن وجدت */
+.hero-features{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+  gap:1rem;
+  margin-top:.9rem;
+}
+.hero-feature{
+  background:var(--bg-white);
+  border:1px solid rgba(148,163,184,.14);
+  border-radius:16px;
+  padding:1.2rem 1.1rem;
+  box-shadow:var(--shadow);
+}
+.hero-feature h3{margin:.6rem 0 .2rem;font-size:1.05rem;}
+.hero-feature p{margin:0;color:var(--text-muted);}
+
+/* Hero card (aside) */
+.hero-aside{max-width:420px;margin-inline:auto;}
+.hero-card{
+  background:#fff;
+  border:1px solid rgba(148,163,184,.28);
+  border-radius:18px;
+  padding:1.4rem 1.25rem;
+  box-shadow:0 16px 38px rgba(15,23,42,.10);
+}
+.hero-working-hours{
+  margin-top:.6rem;
+  padding-top:.6rem;
+  border-top:1px dashed #e5e7eb;
+  font-weight:900;
+  color:#111827;
+}
+
+@media (min-width:768px){
+  .hero{
+    padding:2.65rem 1.5rem 3.8rem;
+    flex-direction:row;
+    align-items:center;
+    justify-content:space-between;
+    gap:2rem;
   }
-  window.addEventListener("resize", syncHeaderHeight, { passive: true });
-  window.addEventListener("load", syncHeaderHeight, { passive: true });
-  syncHeaderHeight();
+  .hero-content{margin-inline:0;}
+}
 
-  // ---------- Mobile Menu ----------
-  const toggleBtn = $(".nav-toggle");
-  const menu = $("#navMenu");
+/* =============== Service Areas section (your HTML has .service-areas) =============== */
+.service-areas{
+  background:linear-gradient(135deg, var(--primary-color), #021b49);
+  color:#fff;
+}
+.service-areas .section-title,
+.service-areas .section-title h2,
+.service-areas p{color:#fff;}
+.service-areas .section-title h2::after{background:linear-gradient(90deg,#fff, rgba(255,255,255,.65));}
 
-  function setMenu(open) {
-    if (!toggleBtn || !menu) return;
-    toggleBtn.setAttribute("aria-expanded", String(open));
-    menu.classList.toggle("open", open);
+.service-areas .area-card{
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:none;
+  color:#fff;
+}
+.service-areas .area-card h4{margin-bottom:.6rem;color:#fff;font-weight:950;}
+.service-areas .area-card ul{list-style:none;padding:0;margin:0;}
+.service-areas .area-card li{padding:.25rem 0;opacity:.92;}
+
+/* =============== Regions buttons (fix sticking on mobile) =============== */
+.regions-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.65rem;
+}
+.regions-list .btn{box-shadow:none;}
+.regions-list .btn:hover{box-shadow:var(--shadow-hover);}
+
+@media (max-width:768px){
+  .regions-list .btn{flex:1 1 calc(50% - .65rem);min-width:0;}
+}
+@media (max-width:420px){
+  .regions-list .btn{flex:1 1 100%;}
+}
+
+/* =============== Booking / Forms =============== */
+.booking-section .booking-form,
+.contact-form{
+  max-width:720px;
+  margin:2rem auto 0;
+  background:var(--bg-white);
+  border:1px solid rgba(148,163,184,.16);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  padding:1.85rem 1.6rem;
+}
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:1rem;
+}
+@media (max-width:640px){
+  .form-grid{grid-template-columns:1fr;}
+}
+
+.form-group{margin-bottom:1.05rem;}
+.form-group label{display:block;margin-bottom:.45rem;font-weight:900;color:var(--text-dark);}
+.form-group input,
+.form-group select,
+.form-group textarea,
+.form-input{
+  width:100%;
+  padding:.85rem .9rem;
+  border:1px solid var(--border-color);
+  border-radius:12px;
+  background:#f9fafb;
+  font-size:.98rem;
+  transition:border-color var(--transition), box-shadow var(--transition), background-color var(--transition);
+}
+.form-group textarea{min-height:120px;resize:vertical;}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus,
+.form-input:focus{
+  border-color:var(--secondary-color);
+  background:#fff;
+  box-shadow:0 0 0 3px rgba(14,165,233,.15);
+}
+.form-group input::placeholder,
+.form-group textarea::placeholder{color:#9ca3af;}
+
+/* =============== FAQ (your HTML uses button + hidden div) =============== */
+.faq-item{
+  background:var(--bg-white);
+  border:1px solid rgba(148,163,184,.14);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  margin-bottom:.9rem;
+}
+.faq-question{
+  width:100%;
+  background:transparent;
+  border:none;
+  padding:1rem 1.1rem;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  font-weight:900;
+  color:var(--text-dark);
+}
+.faq-question:hover{background:rgba(15,23,42,.03);}
+.faq-toggle{opacity:.85;transition:transform var(--transition);}
+.faq-question[aria-expanded="true"] .faq-toggle{transform:rotate(180deg);}
+.faq-answer{
+  padding:0 1.1rem 1.1rem;
+  color:var(--text-muted);
+  line-height:1.9;
+}
+
+/* =============== Footer =============== */
+footer{
+  background:#020617;
+  color:#f9fafb;
+  padding:3rem 1.5rem 1.5rem;
+  margin-top:2rem;
+}
+footer a{color:#fff;text-decoration:underline;text-decoration-color:rgba(255,255,255,.35);}
+footer a:hover{text-decoration-color:#fff;}
+
+/* =============== WhatsApp floating (your HTML uses .whatsapp-btn) =============== */
+.whatsapp-btn{
+  position:fixed;
+  left:1rem;
+  bottom:1.15rem;
+  display:inline-flex;
+  align-items:center;
+  gap:.55rem;
+  background:#22c55e;
+  color:#fff;
+  padding:.6rem .95rem;
+  border-radius:999px;
+  font-weight:950;
+  font-size:.9rem;
+  box-shadow:0 12px 28px rgba(0,0,0,.18);
+  z-index:999;
+  white-space:nowrap;
+}
+.whatsapp-btn svg{width:20px;height:20px;fill:#fff;}
+.whatsapp-btn:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(0,0,0,.22);}
+
+@media (max-width:640px){
+  .whatsapp-btn{font-size:.82rem;padding:.55rem .85rem;left:.75rem;bottom:.95rem;}
+}
+
+/* =============== Mobile Nav =============== */
+@media (max-width:768px){
+  nav{display:none;}
+  .mobile-menu-toggle{display:block;}
+
+  nav.mobile-active{
+    display:block;
+    position:absolute;
+    top:100%;
+    right:0;
+    left:0;
+    background:#fff;
+    border-bottom:1px solid rgba(148,163,184,.16);
+    box-shadow:var(--shadow);
+    padding:.85rem 1rem 1.15rem;
+    z-index:2000;
+    max-height:calc(100vh - 72px);
+    overflow:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  nav.mobile-active ul{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:.65rem;
+  }
+  nav.mobile-active ul li a{display:block;width:100%;padding:.45rem 0;}
+  nav.mobile-active ul li a::after{display:none;}
+
+  .header-container{
+    padding:.55rem 1rem;
+    gap:.75rem;
+    flex-wrap:wrap;
+    position:relative;
   }
 
-  if (toggleBtn && menu) {
-    toggleBtn.addEventListener("click", () => {
-      const expanded = toggleBtn.getAttribute("aria-expanded") === "true";
-      setMenu(!expanded);
-    });
+  .logo{order:1;flex:1 1 auto;min-width:0;}
+  .mobile-menu-toggle{order:2;margin-inline-start:auto;font-size:1.45rem;padding:.42rem .55rem;}
 
-    // close on outside click
-    document.addEventListener("click", (e) => {
-      const isOpen = toggleBtn.getAttribute("aria-expanded") === "true";
-      if (!isOpen) return;
+  .header-home-btn{order:10;width:100%;margin-top:.35rem;}
+  .header-home-btn a{width:100%;justify-content:center;}
 
-      const within = menu.contains(e.target) || toggleBtn.contains(e.target);
-      if (!within) setMenu(false);
-    });
+  .btn{width:100%;justify-content:center;}
 
-    // close when click a link
-    $$("#navMenu a").forEach((a) => {
-      a.addEventListener("click", () => setMenu(false));
-    });
-
-    // ESC to close
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") setMenu(false);
-    });
-  }
-
-  // ---------- Smooth scroll with header offset ----------
-  function scrollToId(id) {
-    const el = $(id);
-    if (!el) return;
-    const headerH = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--header-h")) || 0;
-    const top = el.getBoundingClientRect().top + window.pageYOffset - (headerH + 10);
-    window.scrollTo({ top, behavior: "smooth" });
-  }
-
-  $$('a[href^="#"]').forEach((a) => {
-    a.addEventListener("click", (e) => {
-      const href = a.getAttribute("href");
-      if (!href || href === "#") return;
-      const target = $(href);
-      if (!target) return;
-      e.preventDefault();
-      scrollToId(href);
-    });
-  });
-
-  // ---------- FAQ Accordion (Accessible) ----------
-  const faqButtons = $$(".faq-q");
-  function closeAllFaq(exceptBtn = null) {
-    faqButtons.forEach((btn) => {
-      if (exceptBtn && btn === exceptBtn) return;
-      const expanded = btn.getAttribute("aria-expanded") === "true";
-      if (!expanded) return;
-      btn.setAttribute("aria-expanded", "false");
-      const panelId = btn.getAttribute("aria-controls");
-      const panel = panelId ? document.getElementById(panelId) : null;
-      if (panel) panel.hidden = true;
-    });
-  }
-
-  faqButtons.forEach((btn) => {
-    const panelId = btn.getAttribute("aria-controls");
-    const panel = panelId ? document.getElementById(panelId) : null;
-
-    // default state
-    btn.setAttribute("aria-expanded", "false");
-    if (panel) panel.hidden = true;
-
-    btn.addEventListener("click", () => {
-      const expanded = btn.getAttribute("aria-expanded") === "true";
-      closeAllFaq(btn);
-      btn.setAttribute("aria-expanded", String(!expanded));
-      if (panel) panel.hidden = expanded;
-    });
-  });
-
-  // ---------- JSON-LD FAQPage auto fill from DOM ----------
-  const faqLdEl = $("#faqJsonLd");
-  if (faqLdEl && faqButtons.length) {
-    const entities = faqButtons.map((btn) => {
-      const q = btn.dataset.q?.trim() || btn.textContent.trim();
-      const panelId = btn.getAttribute("aria-controls");
-      const panel = panelId ? document.getElementById(panelId) : null;
-      const a = panel?.dataset.a?.trim() || panel?.textContent.trim() || "";
-      return {
-        "@type": "Question",
-        "name": q,
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": a
-        }
-      };
-    });
-
-    const json = {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": entities
-    };
-
-    faqLdEl.textContent = JSON.stringify(json);
-  }
-
-  // ---------- Booking Form -> WhatsApp ----------
-  const bookingForm = $("#bookingForm");
-  const eventDate = $("#eventDate");
-  const yearEl = $("#year");
-
-  // Year
-  if (yearEl) yearEl.textContent = String(new Date().getFullYear());
-
-  // Min date = today
-  if (eventDate) {
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, "0");
-    const dd = String(today.getDate()).padStart(2, "0");
-    eventDate.min = `${yyyy}-${mm}-${dd}`;
-  }
-
-  function isValidPhone(phone) {
-    const clean = String(phone || "").replace(/[^\d+]/g, "");
-    // accepts: 05xxxxxxxx OR +9665xxxxxxxx OR 9665xxxxxxxx
-    return /^(05\d{8}|(\+?966)5\d{8})$/.test(clean);
-  }
-
-  if (bookingForm) {
-    bookingForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const fd = new FormData(bookingForm);
-      const data = Object.fromEntries(fd.entries());
-
-      const name = (data.name || "").trim();
-      const phone = (data.phone || "").trim();
-      const eventType = (data.eventType || "").trim();
-      const eventDateVal = (data.eventDate || "").trim();
-      const guestCount = (data.guestCount || "").trim();
-      const area = (data.area || "").trim();
-      const details = (data.details || "").trim();
-
-      // simple validation
-      if (!name) {
-        alert("فضلاً اكتب الاسم الكامل.");
-        $("#name")?.focus();
-        return;
-      }
-      if (!phone || !isValidPhone(phone)) {
-        alert("فضلاً اكتب رقم هاتف صحيح (مثال: 05xxxxxxxx).");
-        $("#phone")?.focus();
-        return;
-      }
-      if (!eventType) {
-        alert("فضلاً اختر نوع المناسبة.");
-        $("#eventType")?.focus();
-        return;
-      }
-      if (!eventDateVal) {
-        alert("فضلاً اختر تاريخ المناسبة.");
-        $("#eventDate")?.focus();
-        return;
-      }
-      if (!guestCount) {
-        alert("فضلاً اختر عدد الضيوف.");
-        $("#guestCount")?.focus();
-        return;
-      }
-      if (!area) {
-        alert("فضلاً اختر الحي/المنطقة داخل الطائف.");
-        $("#area")?.focus();
-        return;
-      }
-
-      const eventLabels = {
-        wedding: "حفل زفاف",
-        corporate: "مناسبة شركات",
-        family: "مناسبة عائلية",
-        graduation: "حفل تخرج",
-        birthday: "عيد ميلاد",
-        other: "أخرى",
-      };
-
-      const areaLabels = {
-        center: "مركز الطائف",
-        hada: "الهدا",
-        shafa: "الشفا",
-        hawiya: "الحوية",
-        other: "حي/منطقة أخرى في الطائف",
-      };
-
-      let msg = "سلام الله عليكم، أود حجز خدمة قهوجي الطائف عبر الموقع.\n";
-      msg += `رابط الصفحة: ${window.location.href}\n\n`;
-      msg += "تفاصيل الحجز:\n";
-      msg += `الاسم: ${name}\n`;
-      msg += `الجوال: ${phone}\n`;
-      msg += `نوع المناسبة: ${eventLabels[eventType] || eventType}\n`;
-      msg += `تاريخ المناسبة: ${eventDateVal}\n`;
-      msg += `عدد الضيوف: ${guestCount}\n`;
-      msg += `المنطقة داخل الطائف: ${areaLabels[area] || area}\n`;
-      if (details) msg += `تفاصيل إضافية: ${details}\n`;
-
-      const waNumber = "966507712688";
-      const url = `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`;
-
-      const win = window.open(url, "_blank", "noopener,noreferrer");
-      if (!win) window.location.href = url;
-
-      bookingForm.reset();
-    });
-  }
-
-  // ---------- Reveal on scroll ----------
-  const revealEls = $$(".reveal");
-  if (!("IntersectionObserver" in window)) {
-    revealEls.forEach((el) => el.classList.add("visible"));
-    return;
-  }
-
-  const io = new IntersectionObserver(
-    (entries, obs) => {
-      entries.forEach((en) => {
-        if (en.isIntersecting) {
-          en.target.classList.add("visible");
-          obs.unobserve(en.target);
-        }
-      });
-    },
-    { threshold: 0.12, rootMargin: "0px 0px -60px 0px" }
-  );
-
-  revealEls.forEach((el) => io.observe(el));
-})();
+  /* ✅ تقليل الهيرو أكثر على الموبايل (حل الفراغ) */
+  .hero{padding:1.55rem 1.1rem 3rem;}
+}
