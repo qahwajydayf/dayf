@@ -348,49 +348,117 @@
 
         <div class="art" aria-hidden="true">
           <div class="spark"></div>
+<!-- Dallah + cup SVG (Arabic Dallah) -->
+<svg viewBox="0 0 640 420" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <!-- Cup glow -->
+  <ellipse class="cupGlow" cx="455" cy="335" rx="95" ry="38" fill="rgba(212,175,55,.18)"/>
 
-          <!-- Dallah + cup SVG (simple, elegant) -->
-          <svg viewBox="0 0 520 420" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Cup glow -->
-            <ellipse class="cupGlow" cx="360" cy="330" rx="92" ry="38" fill="rgba(212,175,55,.18)"/>
+  <!-- Cup -->
+  <path d="M395 255h135v60c0 38-31 70-70 70h-24c-39 0-70-32-70-70v-60z"
+        fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+  <path d="M530 275h18c22 0 40 18 40 40s-18 40-40 40h-18"
+        stroke="rgba(244,228,193,.75)" stroke-width="8" stroke-linecap="round"/>
 
-            <!-- Cup -->
-            <path d="M300 250h120v58c0 35-28 64-64 64h-20c-36 0-64-29-64-64v-58z"
-                  fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
-            <path d="M420 270h16c20 0 36 16 36 36s-16 36-36 36h-16"
-                  stroke="rgba(244,228,193,.75)" stroke-width="8" stroke-linecap="round"/>
+  <!-- Coffee stream (from spout to cup) -->
+  <path class="stream"
+        d="M250 160c70 10 120 18 155 40c18 12 26 26 26 38v22"
+        stroke="rgba(212,175,55,.95)" stroke-width="10" stroke-linecap="round"/>
 
-            <!-- Coffee stream -->
-            <path class="stream" d="M238 180c38 6 70 12 94 28c12 8 18 18 18 26v26"
-                  stroke="rgba(212,175,55,.95)" stroke-width="10" stroke-linecap="round"/>
+  <!-- Dallah group -->
+  <g class="dallah">
+    <!-- shadow -->
+    <ellipse cx="240" cy="372" rx="170" ry="26" fill="rgba(0,0,0,.22)"/>
 
-            <!-- Dallah group -->
-            <g class="dallah">
-              <!-- Body -->
-              <path d="M120 260c0-70 40-126 96-144c10-3 18-12 18-22v-8h52v10c0 10 8 18 18 22
-                       c56 18 96 74 96 144c0 92-74 138-140 138S120 352 120 260z"
-                    fill="rgba(255,255,255,.06)" stroke="rgba(244,228,193,.58)" stroke-width="3"/>
-              <!-- Lid -->
-              <path d="M214 72h92c8 0 14 6 14 14v8H200v-8c0-8 6-14 14-14z"
-                    fill="rgba(212,175,55,.18)" stroke="rgba(244,228,193,.55)" stroke-width="3"/>
-              <path d="M260 38c14 10 18 22 18 34" stroke="rgba(244,228,193,.65)" stroke-width="6" stroke-linecap="round"/>
+    <!-- body (bulb) -->
+    <path
+      d="M150 255
+         C150 180 195 132 255 120
+         C315 108 370 150 382 214
+         C392 270 372 318 330 346
+         C305 363 275 370 240 370
+         C205 370 178 360 160 342
+         C132 313 150 285 150 255Z"
+      fill="rgba(255,255,255,.06)"
+      stroke="rgba(244,228,193,.58)"
+      stroke-width="3"
+      stroke-linejoin="round"/>
 
-              <!-- Handle -->
-              <path d="M152 220c-30 18-44 46-38 76c6 30 30 54 62 60"
-                    stroke="rgba(244,228,193,.65)" stroke-width="10" stroke-linecap="round"/>
-              <!-- Spout -->
-              <path d="M360 180c34-26 62-28 86-18c18 8 18 30-10 44c-26 12-56 6-86 0"
-                    stroke="rgba(244,228,193,.70)" stroke-width="10" stroke-linecap="round"/>
-              <path d="M330 170c18 16 26 34 22 52" stroke="rgba(212,175,55,.55)" stroke-width="6" stroke-linecap="round"/>
+    <!-- neck -->
+    <path
+      d="M230 120
+         C222 98 230 82 250 76
+         C270 70 295 78 300 98
+         C304 114 294 126 278 130
+         C260 134 238 132 230 120Z"
+      fill="rgba(212,175,55,.14)"
+      stroke="rgba(244,228,193,.55)"
+      stroke-width="3"
+      stroke-linejoin="round"/>
 
-              <!-- Decorative band -->
-              <path d="M168 252h224" stroke="rgba(212,175,55,.55)" stroke-width="8" stroke-linecap="round"/>
-              <path d="M190 286h180" stroke="rgba(244,228,193,.30)" stroke-width="6" stroke-linecap="round"/>
+    <!-- lid -->
+    <path
+      d="M215 78
+         C245 56 305 56 335 78
+         L335 92
+         C305 106 245 106 215 92
+         Z"
+      fill="rgba(255,255,255,.05)"
+      stroke="rgba(244,228,193,.55)"
+      stroke-width="3"
+      stroke-linejoin="round"/>
 
-              <!-- Base shadow -->
-              <ellipse cx="256" cy="378" rx="158" ry="26" fill="rgba(0,0,0,.22)"/>
-            </g>
-          </svg>
+    <!-- top finial (قِمّة الدلة) -->
+    <path d="M275 28c18 10 24 26 22 44" stroke="rgba(244,228,193,.7)" stroke-width="7" stroke-linecap="round"/>
+    <path d="M290 26c10 8 14 18 13 30" stroke="rgba(212,175,55,.55)" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="286" cy="24" r="6" fill="rgba(212,175,55,.55)" stroke="rgba(244,228,193,.55)" stroke-width="2"/>
+
+    <!-- handle (يد الدلة) -->
+    <path
+      d="M165 210
+         C120 235 102 280 118 320
+         C132 356 165 374 205 370"
+      stroke="rgba(244,228,193,.70)"
+      stroke-width="11"
+      stroke-linecap="round"
+      stroke-linejoin="round"/>
+    <path
+      d="M170 230
+         C140 248 130 276 140 302
+         C150 328 170 344 194 348"
+      stroke="rgba(212,175,55,.40)"
+      stroke-width="7"
+      stroke-linecap="round"
+      stroke-linejoin="round"/>
+
+    <!-- spout (منقار الدلة الطويل) -->
+    <path
+      d="M330 168
+         C395 130 470 134 510 160
+         C530 174 526 196 494 205
+         C455 216 395 202 330 186"
+      stroke="rgba(244,228,193,.78)"
+      stroke-width="12"
+      stroke-linecap="round"
+      stroke-linejoin="round"/>
+    <!-- spout tip -->
+    <path
+      d="M500 159
+         C530 166 540 186 520 198"
+      stroke="rgba(212,175,55,.55)"
+      stroke-width="7"
+      stroke-linecap="round"
+      stroke-linejoin="round"/>
+
+    <!-- decorative bands -->
+    <path d="M170 262H360" stroke="rgba(212,175,55,.55)" stroke-width="9" stroke-linecap="round"/>
+    <path d="M188 292H346" stroke="rgba(244,228,193,.30)" stroke-width="7" stroke-linecap="round"/>
+
+    <!-- little engraving -->
+    <path d="M230 236c10-10 24-10 34 0c10 10 24 10 34 0"
+          stroke="rgba(244,228,193,.28)" stroke-width="6" stroke-linecap="round"/>
+  </g>
+</svg>
+
         </div>
       </div>
 
