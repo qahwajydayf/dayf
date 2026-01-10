@@ -833,3 +833,51 @@ textarea.form-input { resize: vertical; min-height: 110px; }
     padding: .32rem .7rem;
   }
 }
+
+/* =========================
+   Mobile FIX PACK (put at end)
+   ========================= */
+
+/* 1) Fix iOS 100vh issues بشكل آمن */
+.hero{
+  min-height: 100svh; /* موجود عندك، نخليه */
+  min-height: 100dvh; /* أفضل على الأجهزة الحديثة */
+}
+@supports not (height: 100dvh){
+  .hero{ min-height: 100vh; } /* fallback */
+}
+
+/* 2) لو الهيدر ثابت ويغطي المحتوى: اعمل Offset للصفحة */
+:root{ --header-h: 74px; } /* عدل الرقم حسب ارتفاع الهيدر عندك */
+body{ padding-top: var(--header-h); }
+
+/* لو الهيدر مو fixed/ sticky لا تحتاج هذا، لكن غالبًا عندك ثابت */
+header, .header, .site-header{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2000;
+}
+
+/* 3) تعويض داخل الـ Hero حتى ما يجي العنوان تحت الهيدر */
+.hero-content{
+  padding-top: calc(80px + env(safe-area-inset-top));
+}
+
+/* 4) Safe area للأجهزة اللي فيها نوتش */
+.whatsapp-btn{
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  right: calc(16px + env(safe-area-inset-right));
+}
+
+/* 5) منع توسّع عرض الصفحة بسبب عناصر تطلع برا (سبب سكرول أفقي) */
+html, body{ overflow-x: hidden; }
+.container{ width: min(100%, var(--container)); }
+
+/* 6) تحسين الهيدر أكثر على الشاشات الصغيرة جدًا */
+@media (max-width: 480px){
+  :root{ --header-h: 64px; }
+  .hero-content{ padding-top: calc(70px + env(safe-area-inset-top)); }
+}
+
