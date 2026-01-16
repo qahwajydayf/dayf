@@ -1,4 +1,4 @@
 User-agent: *
-Allow: /
+Disallow: /
 
-Sitemap: https://qahwajydayf.github.io/dayf/sitemap.xml
+# (اختياري) لو حبيت توضح أنها صفحة تحويل فقط، لا تضف Sitemap هنا
