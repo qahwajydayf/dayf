@@ -11,7 +11,7 @@
   <meta name="theme-color" content="#1a1612" />
 
   <!-- (اختياري) تحويل احتياطي لو JS مغلق -->
-  <meta http-equiv="refresh" content="7;url=https://qahawaji.vercel.app/" />
+  <meta http-equiv="refresh" content="12;url=https://qahawjy.store/" />
 
   <style>
     :root{
@@ -244,44 +244,9 @@
 
     svg{ width:min(360px, 95%); height:auto; }
 
-    /* coffee stream */
-    .stream{
-      transform-origin: top;
-      animation: pour 1.4s ease-in-out infinite;
-      opacity:.95;
-    }
-    @keyframes pour{
-      0%,25%{ transform: scaleY(0); opacity:0; }
-      35%,75%{ transform: scaleY(1); opacity:1; }
-      100%{ transform: scaleY(0); opacity:0; }
-    }
-
-    /* subtle tilt */
-    .dallah{
-      transform-origin: 55% 55%;
-      animation: tilt 1.4s ease-in-out infinite;
-      filter: drop-shadow(0 18px 28px rgba(0,0,0,.35));
-    }
-    @keyframes tilt{
-      0%,25%{ transform: rotate(0deg) translateY(0); }
-      45%,70%{ transform: rotate(-8deg) translateY(-2px); }
-      100%{ transform: rotate(0deg) translateY(0); }
-    }
-
-    /* cup glow */
-    .cupGlow{
-      animation: cup 1.4s ease-in-out infinite;
-      transform-origin: center;
-    }
-    @keyframes cup{
-      0%,35%{ opacity:.35; transform: scale(.98); }
-      55%,75%{ opacity:.65; transform: scale(1.02); }
-      100%{ opacity:.35; transform: scale(.98); }
-    }
-
     /* reduce motion */
     @media (prefers-reduced-motion: reduce){
-      .glow, .spark, .dallah, .stream, .dot, .cupGlow{ animation:none !important; }
+      .glow, .spark, .dot{ animation:none !important; }
       .bar{ transition:none; }
     }
 
@@ -328,7 +293,7 @@
           </p>
 
           <div class="actions">
-            <a class="btn btn-primary" id="goNow" href="https://qahawaji.vercel.app/" rel="noopener">
+            <a class="btn btn-primary" id="goNow" href="https://qahawjy.store/" rel="noopener">
               الانتقال الآن
               <span aria-hidden="true">↩</span>
             </a>
@@ -345,36 +310,33 @@
 
           <div class="hint" id="hint">سيتم التحويل خلال <span id="sec">5</span> ثوانٍ…</div>
         </div>
-<div class="art" aria-hidden="true">
-  <div class="spark"></div>
 
-  <canvas id="dallahCanvas" width="560" height="380" style="width:min(360px, 95%); height:auto;"></canvas>
+        <div class="art" aria-hidden="true">
+          <div class="spark"></div>
 
-  <noscript style="display:block; padding:14px; color:rgba(247,243,238,.8); font-weight:700;">
-    يلزم تفعيل JavaScript لعرض تأثير الدلّة.
-  </noscript>
-</div>
+          <canvas id="dallahCanvas" width="560" height="380" style="width:min(360px, 95%); height:auto;"></canvas>
 
-
+          <noscript style="display:block; padding:14px; color:rgba(247,243,238,.8); font-weight:700;">
+            يلزم تفعيل JavaScript لعرض تأثير الدلّة.
+          </noscript>
         </div>
       </div>
 
       <div class="strip">
         <span>إذا واجهت مشكلة: افتح الرابط يدويًا</span>
-        <a href="https://qahawaji.vercel.app/" rel="noopener">qahawaji.vercel.app</a>
+        <a href="https://qahawjy.store/" rel="noopener">qahawjy.store</a>
       </div>
     </div>
   </div>
 
   <script>
     (function(){
-      const TARGET = "https://qahawaji.vercel.app/";
+      const TARGET = "https://qahawjy.store/";
       const DURATION_MS = 5200; // مدة الانتظار قبل التحويل
       const bar = document.getElementById("bar");
       const secEl = document.getElementById("sec");
       const hint = document.getElementById("hint");
       const cancelBtn = document.getElementById("cancel");
-      const goNow = document.getElementById("goNow");
 
       let start = performance.now();
       let raf = null;
@@ -406,19 +368,8 @@
         cancelBtn.style.opacity = ".6";
       });
 
-      goNow.addEventListener("click", function(){
-        // مكانه هنا فقط لتحسين التجربة (يضمن الانتقال حتى لو توقف الأنيميشن)
-        window.location.href = TARGET;
-      });
-
-      // دعم: إذا كانت الصفحة داخل iframe، افتح بالخارج
-      try{
-        if (window.top !== window.self){
-          window.top.location.href = TARGET;
-        }
-      }catch(e){}
-            // =========================================================
-      // Canvas Arabic Dallah (بديل للـ SVG) - مضمون
+      // =========================================================
+      // Canvas Arabic Dallah - مضمون
       // =========================================================
       (function initDallahCanvas(){
         const c = document.getElementById("dallahCanvas");
@@ -634,7 +585,7 @@
         function loop(now){
           const t = (now - t0) / 1000;
 
-          // ميل لطيف مثل SVG
+          // ميل لطيف
           const angle = (Math.sin(t * Math.PI * (1/0.7)) * 0.08) - 0.04;
 
           // تشغيل السكب: on/off
