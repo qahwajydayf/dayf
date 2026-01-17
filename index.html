@@ -10,8 +10,10 @@
   <meta name="robots" content="noindex,nofollow,noarchive" />
   <meta name="theme-color" content="#1a1612" />
 
-  <!-- (اختياري) تحويل احتياطي لو JS مغلق -->
-  <meta http-equiv="refresh" content="12;url=https://www.qahwajy.store/" />
+  <!-- التحويل الاحتياطي يعمل فقط إذا كان JavaScript مغلق -->
+  <noscript>
+    <meta http-equiv="refresh" content="12;url=https://www.qahwajy.store/" />
+  </noscript>
 
   <style>
     :root{
@@ -37,7 +39,10 @@
         radial-gradient(circle at 80% 80%, rgba(139,69,19,.18), transparent 60%),
         linear-gradient(180deg, var(--bg0), var(--bg1));
       color:var(--txt);
-      overflow:hidden;
+
+      /* لتجنب قصّ المحتوى في شاشات قصيرة */
+      overflow-x:hidden;
+      overflow-y:auto;
     }
 
     .noise{
@@ -49,7 +54,7 @@
     }
 
     .wrap{
-      min-height:100%;
+      min-height:100vh;
       display:grid;
       place-items:center;
       padding:24px;
@@ -242,8 +247,6 @@
       to{ transform: translate(18px,14px) scale(1.04); }
     }
 
-    svg{ width:min(360px, 95%); height:auto; }
-
     /* reduce motion */
     @media (prefers-reduced-motion: reduce){
       .glow, .spark, .dot{ animation:none !important; }
@@ -332,7 +335,7 @@
   <script>
     (function(){
       const TARGET = "https://www.qahwajy.store/";
-      const DURATION_MS = 5200; // مدة الانتظار قبل التحويل
+      const DURATION_MS = 5000; // 5 ثوانٍ
       const bar = document.getElementById("bar");
       const secEl = document.getElementById("sec");
       const hint = document.getElementById("hint");
@@ -342,8 +345,12 @@
       let raf = null;
       let canceled = false;
 
+      // اضبط الرقم الابتدائي
+      secEl.textContent = Math.ceil(DURATION_MS / 1000);
+
       function tick(now){
         if (canceled) return;
+
         const elapsed = now - start;
         const p = Math.min(1, elapsed / DURATION_MS);
         bar.style.width = (p * 100).toFixed(1) + "%";
@@ -363,13 +370,14 @@
       cancelBtn.addEventListener("click", function(){
         canceled = true;
         if (raf) cancelAnimationFrame(raf);
+
         hint.textContent = "تم إيقاف التحويل. يمكنك الانتقال يدويًا عبر زر (الانتقال الآن).";
         cancelBtn.disabled = true;
         cancelBtn.style.opacity = ".6";
       });
 
       // =========================================================
-      // Canvas Arabic Dallah - مضمون
+      // Canvas Arabic Dallah
       // =========================================================
       (function initDallahCanvas(){
         const c = document.getElementById("dallahCanvas");
@@ -379,9 +387,7 @@
 
         const W = c.width, H = c.height;
 
-        function clear(){
-          ctx.clearRect(0,0,W,H);
-        }
+        function clear(){ ctx.clearRect(0,0,W,H); }
 
         function glow(x,y,rx,ry,alpha){
           ctx.save();
@@ -405,16 +411,13 @@
         }
 
         function drawCup(){
-          // glow under cup
           glow(410, 320, 95, 38, 1);
 
-          // cup body
           ctx.save();
           ctx.strokeStyle = "rgba(255,255,255,0.18)";
           ctx.fillStyle   = "rgba(255,255,255,0.08)";
           roundedRect(345, 235, 150, 95, 18, ctx.fillStyle, ctx.strokeStyle);
 
-          // cup handle
           ctx.strokeStyle = "rgba(244,228,193,0.75)";
           ctx.lineWidth = 8;
           ctx.lineCap = "round";
@@ -434,7 +437,6 @@
           ctx.lineWidth = 10;
           ctx.lineCap = "round";
           ctx.beginPath();
-          // من رأس المنقار إلى الفنجان
           ctx.moveTo(300, 185);
           ctx.quadraticCurveTo(360, 200, 395, 220);
           ctx.quadraticCurveTo(420, 236, 430, 250);
@@ -443,7 +445,6 @@
         }
 
         function drawDallah(angle){
-          // dallah center
           const cx = 235, cy = 250;
 
           ctx.save();
@@ -537,7 +538,7 @@
           ctx.stroke();
           ctx.restore();
 
-          // spout (منقار)
+          // spout
           ctx.save();
           ctx.strokeStyle = "rgba(244,228,193,0.78)";
           ctx.lineWidth = 12;
@@ -550,7 +551,6 @@
           ctx.quadraticCurveTo(450, 228, 300, 190);
           ctx.stroke();
 
-          // tip line
           ctx.strokeStyle = "rgba(212,175,55,0.55)";
           ctx.lineWidth = 7;
           ctx.beginPath();
